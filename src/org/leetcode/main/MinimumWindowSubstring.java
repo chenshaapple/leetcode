@@ -2,8 +2,10 @@ package org.leetcode.main;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -43,17 +45,21 @@ public class MinimumWindowSubstring {
     	int left = 0, right = 0;
     	List<String> windows = new LinkedList<>();
     	char[] chars = T.toCharArray();
+//    	boolean[] map = new boolean[256];
+    	Map<Character, Boolean> map = new HashMap<>();
     	String result = "";
     	int min = Integer.MAX_VALUE;
-    
+    	for(char character : chars) {
+    		map.put(character, true);
+    	}
     	int rightBorder = S.length() - T.length();
     	for( ; left < rightBorder; left++) {
-    		if(!T.contains(String.valueOf(S.charAt(left)))) {
+    		if(!map.containsKey(S.charAt(left))) {
     			continue;
     		}
     		String match = "";
     		for(right = left + T.length() - 1; right < S.length(); right++) {
-    			if(!T.contains(String.valueOf(S.charAt(right)))) {
+    			if(!map.containsKey(S.charAt(right))) {
     				continue;
     			}
     			match = S.substring(left, right + 1);
@@ -74,17 +80,31 @@ public class MinimumWindowSubstring {
     	return result;
     }
     
-    private boolean checkWindow(String tbd, char[] T) {
-    	for(char character : T) {
-    		if(!tbd.contains(String.valueOf(character))) {
+    private boolean checkWindow(String s, char[] chars) {
+    	for(char character : chars) {
+    		boolean tmp = false;
+    		for(int i = 0; i < s.length(); i++) {
+    			if(s.charAt(i) == character) {
+    				tmp = true;
+    				break;
+    			}
+    		}
+    		if(!tmp) {
     			return false;
     		}
     	}
     	return true;
     }
+    
+  
 	@Test
 	public void test() {
 		assertEquals("sk_not_what_your_c", minWindow("ask_not_what_your_country_can_do_for_you_ask_what_you_can_do_for_your_country", "ask_country"));
+	}
+	
+	@Test
+	public void testEasy() {
+		assertEquals("BANC", minWindow("ADOBECODEBANC", "ABC"));
 	}
 
 }

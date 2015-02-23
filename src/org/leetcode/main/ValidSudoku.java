@@ -7,7 +7,6 @@ import org.junit.Test;
 public class ValidSudoku {
 
     public boolean isValidSudoku(char[][] board) {
-    		boolean result = true;
         //check by column
     		for(int row = 0; row < 9; row++){
     			char[] dictionary = new char[10];
@@ -52,7 +51,7 @@ public class ValidSudoku {
         				}
     				}
     		}
-    		return result;
+    		return true;
     }
     
 	@Test

@@ -7,105 +7,91 @@ import java.util.*;
 
 public class SudokuSolver {
 	public void solveSudoku(char[][] board) {
-		Map<Integer, List<Character>> matrixLeft = new HashMap<>();
-		Map<Integer, List<Character>> rowLeft = new HashMap<>();
-		Map<Integer, List<Character>> colLeft = new HashMap<>();
-		int left = 81;
-		for (int row = 0; row < 9; row++) {
-			boolean[] bitSet = new boolean[9];
-			List<Character> list = new ArrayList<>();
-			for (int col = 0; col < 9; col++) {
-				char current = board[row][col];
-				if (current != '.') {
-					bitSet[current - '1'] = true;
-					left--;
-				}
-			}
-			for (int i = 0; i < 9; i++) {
-				if (!bitSet[i]) {
-					list.add((char) ('1' + i));
-				}
-			}
-			rowLeft.put(row, list);
-		}
-
-		for (int col = 0; col < 9; col++) {
-			boolean[] bitSet = new boolean[9];
-			List<Character> list = new ArrayList<>();
-			for (int row = 0; row < 9; row++) {
-				char current = board[row][col];
-				if (current != '.') {
-					bitSet[current - '1'] = true;
-				}
-			}
-			for (int i = 0; i < 9; i++) {
-				if (!bitSet[i]) {
-					list.add((char) ('1' + i));
-				}
-			}
-			colLeft.put(col, list);
-		}
-
-		for (int i = 0; i < 9; i++) {
-			boolean[] bitSet = new boolean[9];
-			List<Character> list = new ArrayList<>();
-			for (int row = (i / 3) * 3; row < (i / 3) * 3 + 3; row++) {
-				for (int column = (i % 3) * 3; column < (i % 3) * 3 + 3; column++) {
-					char current = board[row][column];
-					if (current != '.') {
-						bitSet[current - '1'] = true;
-					}
-				}
-			}
-			for (int index = 0; index < 9; index++) {
-				if (!bitSet[index]) {
-					list.add((char) ('1' + index));
-				}
-			}
-			matrixLeft.put(i, list);
-		}
-		
-		while(left > 0) {
-			//find the most possible next number
-			List<Character> options = null;
-			int size = Integer.MAX_VALUE;
-			for(int row = 0; row < 9; row++) {
-				for(int col = 0; col < 9; col++) {
-					char current = board[row][col];
-					if(current == '.') {
-						List<Character> tmp = getIntersect(rowLeft.get(row), colLeft.get(col));
-						tmp = getIntersect(tmp, matrixLeft.get((row / 3) * 3 + (col / 3)));
-						if(tmp.size() < size) {
-							size = tmp.size();
-							options = tmp;
-						}
-						if(tmp.size() == 1) {
-   						}
-					}
-				}
-			}
-			
-			
-		}
+		solveSudoku(board, 0, 0);
 	}
 
-	private List<Character> getIntersect(List<Character> list1, List<Character> list2) {
-		List<Character> result = new ArrayList<>();
-		int[] count = new int[9];
-		for(int i = 0; i < 9; i++) {
-			count[list1.get(i) - '1']++;
-			count[list2.get(i) - '1']++;
+	private boolean solveSudoku(char[][] board, int row, int col) {
+		if (row == board.length) {
+			return true;
 		}
-		for(int i = 0; i < 9; i++) {
-			if(count[i] == 2) {
-				result.add((char) ('1' + i));
+		int nextRow = col < 8 ? row : row + 1;
+		int nextCol = col < 8 ? col + 1 : 0;
+		if (board[row][col] != '.') {
+			return solveSudoku(board, nextRow, nextCol);
+		}
+		List<Character> options = getAvailable(board, row, col);
+		for (Character c : options) {
+			board[row][col] = c;
+			if(solveSudoku(board, nextRow, nextCol)) {
+				return true;
+			}
+			board[row][col] = '.';
+		}
+		return false;
+	}
+	
+	//本来以为这个方法的出现是一种优化，没想到更慢。。
+	//直接尝试1-9再检测是否valid更快
+	private List<Character> getAvailable(char[][] board, int row, int col) {
+		List<Character> result = new ArrayList<>();
+		BitSet bitSet = new BitSet(9);
+		for (int i = 0; i < 9; i++) {
+			char current = board[row][i];
+			if (current == '.') {
+				continue;
+			}
+			bitSet.set(current - '1');
+		}
+		// check this column
+		for (int i = 0; i < 9; i++) {
+			char current = board[i][col];
+			if (current == '.') {
+				continue;
+			}
+			bitSet.set(current - '1');
+		}
+		// check this matrix
+		for (int _row = row / 3 * 3; _row < row / 3 * 3 + 3; _row++) {
+			for (int _col = col / 3 * 3; _col < col / 3 * 3 + 3; _col++) {
+				char current = board[_row][_col];
+				if (current == '.') {
+					continue;
+				}
+				bitSet.set(current - '1');
+			}
+		}
+		for (int i = 0; i < 9; i++) {
+			if (!bitSet.get(i)) {
+				result.add((char) (i + '1'));
 			}
 		}
 		return result;
 	}
+
+
 	@Test
 	public void test() {
-		System.out.println((char) ('1' + 0));
+		char[][] board = new char[][] {
+				{ '5', '3', '.', '.', '7', '.', '.', '.', '.' },
+				{ '6', '.', '.', '1', '9', '5', '.', '.', '.' },
+				{ '.', '9', '8', '.', '.', '.', '.', '6', '.' },
+				{ '8', '.', '.', '.', '6', '.', '.', '.', '3' },
+				{ '4', '.', '.', '8', '.', '3', '.', '.', '1' },
+				{ '7', '.', '.', '.', '2', '.', '.', '.', '6' },
+				{ '.', '6', '.', '.', '.', '.', '2', '8', '.' },
+				{ '.', '.', '.', '4', '1', '9', '.', '.', '5' },
+				{ '.', '.', '.', '.', '8', '.', '.', '7', '9' } };
+		solveSudoku(board);
+		print(board);
 	}
 
+	private void print(char[][] board) {
+		for (int row = 0; row < 9; row++) {
+			for (int col = 0; col < 9; col++) {
+				System.out.print(board[row][col]);
+				System.out.print(' ');
+			}
+			System.out.println();
+		}
+	}
 }

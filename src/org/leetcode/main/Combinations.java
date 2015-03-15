@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Combinations {
 	public List<List<Integer>> combine(int n, int k) {
-		if(k > n) {
+		if (k > n) {
 			return new LinkedList<>();
 		}
 		List<List<Integer>> result = new LinkedList<>();
@@ -17,12 +17,12 @@ public class Combinations {
 	}
 
 	private List<Integer> getOptions(int n) {
-    	 List<Integer> result = new LinkedList<>();
-    	 for(int i = 0; i < n; i++) {
-    		 result.add(i + 1);
-    	 }
-    	 return result;
-    }
+		List<Integer> result = new LinkedList<>();
+		for (int i = 0; i < n; i++) {
+			result.add(i + 1);
+		}
+		return result;
+	}
 
 	private void combine(List<List<Integer>> result, List<Integer> combine,
 			List<Integer> options, int k) {
@@ -30,9 +30,9 @@ public class Combinations {
 			result.add(new LinkedList<>(combine));
 			return;
 		}
-		for(int i = 0; i <= options.size() - k; i++) {
+		for (int i = 0; i <= options.size() - k; i++) {
 			int tmp = options.get(i);
-			if(combine.size() > 0 && tmp < combine.get(combine.size() - 1)) {
+			if (combine.size() > 0 && tmp < combine.get(combine.size() - 1)) {
 				continue;
 			}
 			combine.add(tmp);
@@ -49,10 +49,10 @@ public class Combinations {
 		assertEquals(6, result.size());
 	}
 
-//	@Test
+	// @Test
 	public void testAdd() {
 		List<Integer> options = new LinkedList<>();
-		for(int i = 0; i < 4; i++) {
+		for (int i = 0; i < 4; i++) {
 			options.add(i + 1);
 		}
 		int tmp = options.get(2);

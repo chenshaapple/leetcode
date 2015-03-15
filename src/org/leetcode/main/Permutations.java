@@ -7,41 +7,43 @@ import org.junit.Test;
 import java.util.*;
 
 public class Permutations {
-    public List<List<Integer>> permute(int[] num) {
-    	List<List<Integer>> result = new LinkedList<>();
-    	permute(result, num, 0);
-    	return result;
-    }
-    
-    private void permute(List<List<Integer>> result, int[] num, int begin) {
-    	if(begin >= num.length) {
-    		result.add(getPermutation(num));
-    		return;
-    	}
-    	//½«ËùÓĞµÄ¿ÉÄÜÔªËØ¶¼·ÅÔÚµÚÒ»¸ö£¬È»ºó¶ÔÊ£ÏÂµÄ½øĞĞµİ¹é
-    	for(int i = begin; i < num.length; i++) {
-    		swap(num, begin, i);
-    		permute(result, num, begin + 1);
-    		swap(num, begin, i);
-    	}
-    }
-    
-    private void swap(int[] num, int index1, int index2) {
-    	int tmp = num[index1];
-    	num[index1] = num[index2];
-    	num[index2] = tmp;
-    }
-    
-    private List<Integer> getPermutation(int[] num) {
-    	List<Integer> result = new LinkedList<>();
-    	for(int ele : num) {
-    		result.add(ele);
-    	}
-    	return result;
-    }
+	public List<List<Integer>> permute(int[] num) {
+		List<List<Integer>> result = new LinkedList<>();
+		permute(result, num, 0);
+		return result;
+	}
+
+	private void permute(List<List<Integer>> result, int[] num, int begin) {
+		if (begin >= num.length) {
+			result.add(getPermutation(num));
+			return;
+		}
+
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ĞµÄ¿ï¿½ï¿½ï¿½Ôªï¿½Ø¶ï¿½ï¿½ï¿½ï¿½Úµï¿½Ò»ï¿½ï¿½ï¿½ï¿½È»ï¿½ï¿½ï¿½Ê£ï¿½ÂµÄ½ï¿½ï¿½Ğµİ¹ï¿½
+		for (int i = begin; i < num.length; i++) {
+			swap(num, begin, i);
+			permute(result, num, begin + 1);
+			swap(num, begin, i);
+		}
+	}
+
+	private void swap(int[] num, int index1, int index2) {
+		int tmp = num[index1];
+		num[index1] = num[index2];
+		num[index2] = tmp;
+	}
+
+	private List<Integer> getPermutation(int[] num) {
+		List<Integer> result = new LinkedList<>();
+		for (int ele : num) {
+			result.add(ele);
+		}
+		return result;
+	}
+
 	@Test
 	public void test() {
-		List<List<Integer>> result = permute(new int[]{1});
+		List<List<Integer>> result = permute(new int[] { 1 });
 		assertEquals(1, result.size());
 	}
 

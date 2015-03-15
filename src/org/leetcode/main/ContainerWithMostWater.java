@@ -6,15 +6,16 @@ import org.junit.Test;
 
 public class ContainerWithMostWater {
     public int maxArea(int[] height) {
-    	int result = 0;
-        for(int i = 0; i < height.length - 1; i++) {
-        	for(int j = i + 1; j < height.length; j++) {
-        		int area = (j - i) * Math.min(height[i], height[j]);
-        		result = area > result ? area : result;
-        	}
-        	
-        }
-        return result;
+    		int result = 0, left = 0, right = height.length - 1;
+    		while(left < right) {
+    			result = Math.max(result, (right - left) * Math.min(height[left], height[right]));
+    			if(height[left] < height[right]) {
+    				left++;
+    			} else {
+    				right++;
+    			}
+    		}
+    		return result;
     }
 	@Test
 	public void test() {

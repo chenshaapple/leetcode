@@ -50,6 +50,10 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.util.FileUtils;
 import org.junit.Test;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import junit.*;
 import static org.junit.Assert.*;
 
@@ -287,5 +291,24 @@ public class Exp {
 		for (int i = 0; st.hasMoreTokens(); i++)
 			cmdarray[i] = st.nextToken();
 		System.out.println(cmdarray);
+	}
+	
+	public static class Push {
+		private String ref;
+
+		public String getRef() {
+			return ref;
+		}
+
+		public void setRef(String ref) {
+			this.ref = ref;
+		}
+	}
+	@Test
+	public void testGson() {
+		Gson gson = new GsonBuilder().create();
+		String input = "{\"ref\":\"name\"}";
+		Exp.Push push = gson.fromJson(input, Exp.Push.class);
+		assertNotNull(push.getRef());
 	}
 }

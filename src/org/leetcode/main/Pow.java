@@ -8,19 +8,17 @@ public class Pow {
 	private double delta = 0.0001;
 
 	public double pow(double x, int n) {
-		if(n < 0) {
-			n = -n;
-			x = 1/x;
+		if (n == 0) {
+			return 1.0;
 		}
-		int result = 1;
-		while (n != 0) {
-			if ((n & 1) == 1)
-				result *= x;
-			n >>= 1;
-			x *= x;
+		double half = pow(x, n / 2);
+		if (n % 2 == 0) {
+			return half * half;
+		} else if (n > 0) {
+			return half * half * x;
+		} else {
+			return half * half / x;
 		}
-
-		return result;
 	}
 
 	@Test

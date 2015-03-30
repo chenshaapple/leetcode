@@ -33,28 +33,29 @@ public class PopulatingNextRightPointersinEachNodeII {
     public void connectConstantSpace(TreeLinkNode root) {
     		TreeLinkNode first = root;
     		while(first != null) {
-    			TreeLinkNode curt = first, nextLevelFirst = null, nextLevelPrev = null;
+    			TreeLinkNode curt = first, nextLevelFirst = null, nextLevelPrev = new TreeLinkNode(0);
     			while(curt != null) {
     				if(nextLevelFirst == null) {
     					nextLevelFirst = curt.left != null ? curt.left : curt.right;
     				}
     				if(curt.left != null) {
-    					if(nextLevelPrev != null) {
-    						nextLevelPrev.next = curt.left;
-    					}
-    					nextLevelPrev = curt.left;
+    					nextLevelPrev.next = curt.left;
+    					nextLevelPrev = nextLevelPrev.next;
     				}
     				if(curt.right != null) {
-    					if(nextLevelPrev != null) {
-    						nextLevelPrev.next = curt.right;
-    					}
-    					nextLevelPrev = curt.right;
+					nextLevelPrev.next = curt.right;
+					nextLevelPrev = nextLevelPrev.next;
     				}
     				curt = curt.next;
     			}
     			first = nextLevelFirst;
     		}
     }
+    
+    public void connectRecursive(TreeLinkNode root) {
+    		
+    }
+    
 	@Test
 	public void test() {
 		TreeLinkNode root = new TreeLinkNode(1);

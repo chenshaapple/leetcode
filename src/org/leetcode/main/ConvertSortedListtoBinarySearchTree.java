@@ -2,10 +2,12 @@ package org.leetcode.main;
 
 import static org.junit.Assert.*;
 
+import java.awt.HeadlessException;
+
 import org.junit.Test;
 
 /*
- * ¶þ²éËÑË÷Ê÷£¬×ó<ÖÐ<ÓÒ
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<ï¿½ï¿½<ï¿½ï¿½
  */
 
 public class ConvertSortedListtoBinarySearchTree {
@@ -30,9 +32,47 @@ public class ConvertSortedListtoBinarySearchTree {
 		return root;
 	}
 
+	private ListNode curt;
+	
+	public TreeNode sortedListToBSTBottomUp(ListNode head) {
+		int size = 0;
+		ListNode curt = head;
+		while(curt != null) {
+			curt = curt.next;
+			size++;
+		}
+		this.curt = head;
+		return bottomUp(0, size - 1);
+	}
+	
+	private TreeNode bottomUp(int begin, int end) {
+		if(begin > end) {
+			return null;
+		}
+		int mid = (begin + end) / 2;
+		TreeNode left = bottomUp(begin, mid - 1);
+		TreeNode result = new TreeNode(curt.val);
+		curt = curt.next;
+		result.left = left;
+		result.right = bottomUp(mid + 1, end);
+		return result;
+	}
+	
+	private void inorder(TreeNode head) {
+		if(head == null) {
+			return;
+		}
+		inorder(head.left);
+		System.out.print(head.val + " ");
+		inorder(head.right);
+	}
+	
 	@Test
 	public void test() {
-		sortedListToBST(new ListNode(1));
+		ListNode head = new ListNode(1);
+		head.next = new ListNode(2);
+		head.next.next = new ListNode(3);
+		inorder(sortedListToBSTBottomUp(head));
 	}
 
 }

@@ -11,9 +11,9 @@ public class UniqueBinarySearchTrees {
     		}
     		int[] opt = new int[n + 1];
     		opt[0] = 1; opt[1] = 1;
-    		for(int curt = 2; curt <= n; curt++) {
-    			for(int root = 1; root <= curt; root++) {//当前根
-    				opt[curt] += opt[root - 1] * opt[curt - root];//左子树的个数*右子树的个数
+    		for(int itr = 2; itr <= n; itr++) {
+    			for(int root = 1; root <= itr; root++) {//当前根
+    				opt[itr] += opt[root - 1] * opt[itr - root];//左子树的个数*右子树的个数
     			}
     		}
     		return opt[n];

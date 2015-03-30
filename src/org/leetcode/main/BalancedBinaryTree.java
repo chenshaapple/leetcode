@@ -13,6 +13,9 @@ public class BalancedBinaryTree {
     }
     
     private int getDepth(TreeNode root) {
+		if(result == false) {
+			return -1;
+		}
     		if(root == null) {
     			return 0;
     		}

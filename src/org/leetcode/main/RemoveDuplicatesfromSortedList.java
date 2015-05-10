@@ -1,24 +1,21 @@
 package org.leetcode.main;
 
 public class RemoveDuplicatesfromSortedList {
-    public ListNode deleteDuplicates(ListNode head) {
-    		if(head == null || head.next == null) {
-    			return head;
-    		}
-        ListNode vHead = new ListNode(0);
-        vHead.next = head;
-        ListNode curNode = head.next, lastNode = head;
-        lastNode.next = null;
-        while(curNode != null) {
-        		if(curNode.val != lastNode.val) {
-        			lastNode.next = curNode;
-        			lastNode = curNode;
-        			curNode = curNode.next;
-        			lastNode.next = null;
-        			continue;
-        		}
-        		curNode = curNode.next;
+    public class Solution {
+        public ListNode deleteDuplicates(ListNode head) {
+        		if(head == null || head.next == null) return head;
+            ListNode curr = head, vhead = new ListNode(0), vcurr = null;
+            vhead.next = head;
+            vcurr = vhead.next;
+            while(curr != null) {
+            		if(curr.val != vcurr.val) {
+            			vcurr.next = curr;
+            			vcurr = curr;
+            		}
+            		curr = curr.next;
+            }
+            vcurr.next = null;
+            return vhead.next;
         }
-        return vHead.next;
     }
 }

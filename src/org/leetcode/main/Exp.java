@@ -1,15 +1,16 @@
 package org.leetcode.main;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.SoftReference;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,15 +21,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -36,59 +36,61 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.PullCommand;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.RepositoryBuilder;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-import org.eclipse.jgit.util.FileUtils;
 import org.junit.Test;
 
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import junit.*;
-import static org.junit.Assert.*;
-
 public class Exp {
-	class CityAttract {
-		int index;
-		int attract;
 
-		public CityAttract(int index, int attract) {
-			this.index = index;
-			this.attract = attract;
+	@Test
+	public void testCallable() throws IOException {
+		BufferedReader read = new BufferedReader(new InputStreamReader(
+				System.in));
+		String[] numsString = read.readLine().split(" ");
+		String sequence = read.readLine();
+		int[] nums = new int[3];
+		for (int i = 0; i < 3; i++) {
+			nums[i] = Integer.parseInt(numsString[i]);
 		}
+		Arrays.sort(nums);
+		if (nums[0] + nums[1] != nums[2]) {
+			System.out.println(sequence.length());
+			return;
+		}
+		int cR = 0, cY = 0, cB = 0;
+		int max = Integer.MIN_VALUE;
+		for (int i = 0; i < sequence.length(); i++) {
+			char curt = sequence.charAt(i);
+			if (curt == 'R') {
+				cR++;
+			} else if (curt == 'B') {
+				cB++;
+			} else if (curt == 'Y') {
+				cY++;
+			}
+			List<Integer> tmp = Arrays.asList(cR, cY, cB);
+			Collections.sort(tmp);
+			if (tmp.get(1) - tmp.get(0) == nums[0]
+					&& tmp.get(2) - tmp.get(1) == nums[1]) {
+				max = Math.max(max, cR + cY + cB);
+				cR = cY = cB = 0;
+			}
+		}
+		System.out.println(max);
 	}
 
-	public int solution(int K, int[] C, int[] D) {
-		int result = 1;
-		List<CityAttract> cityAttracts = new LinkedList<Exp.CityAttract>();
-		for (int i = 0; i < D.length; i++) {
-			cityAttracts.add(new CityAttract(i, D[i]));
-		}
-		Collections.sort(cityAttracts, new Comparator<CityAttract>() {
-			@Override
-			public int compare(CityAttract o1, CityAttract o2) {
-				if (o1.attract < o2.attract) {
-					return -1;
-				} else if (o1.attract > o2.attract) {
-					return 1;
-				}
-				return 0;
-			}
-		});
-		for (int i = 0; i < K; i++) {
-
-		}
-		return result;
+	@Test
+	public void solution() {
+		List<Integer> list = new ArrayList<>(5);
+		list.set(4, Integer.valueOf(2));
 	}
 
 	// @Test
@@ -237,7 +239,8 @@ public class Exp {
 	public void testGit() throws IOException, InterruptedException {
 		Runtime runtime = Runtime.getRuntime();
 		Process process;
-		process = runtime.exec("/Users/apple/git/Bench4Q/webhook/target/classes/pull.sh");
+		process = runtime
+				.exec("/Users/apple/git/Bench4Q/webhook/target/classes/pull.sh");
 		// process = runtime.exec("git pull", null, new File(
 		// "/Users/apple/git/Bench4Q-hook"));
 		System.out.println("error stream");
@@ -245,10 +248,10 @@ public class Exp {
 		System.out.println("output stream");
 		printStream(process.getInputStream());
 	}
-	
+
 	private void printStream(InputStream stream) {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				stream));
+		BufferedReader reader = new BufferedReader(
+				new InputStreamReader(stream));
 		String line = "";
 		try {
 			while ((line = reader.readLine()) != null) {
@@ -292,7 +295,28 @@ public class Exp {
 			cmdarray[i] = st.nextToken();
 		System.out.println(cmdarray);
 	}
-	
+
+	@Test
+	public void testIfPresent() {
+		class TestOptional {
+			int value;
+
+			public TestOptional(int value) {
+				this.value = value;
+			}
+		}
+		Optional<String> str = Optional.of("hha");
+		str.ifPresent(c -> {
+			c = "hahaha";
+		});
+		System.out.println(str.get());// it is haha
+		Optional<TestOptional> testOptional = Optional.of(new TestOptional(3));
+		testOptional.ifPresent(c -> {
+			c.value = 5;
+		});
+		System.out.println(testOptional.get().value);
+	}
+
 	public static class Push {
 		private String ref;
 
@@ -304,11 +328,109 @@ public class Exp {
 			this.ref = ref;
 		}
 	}
+
 	@Test
 	public void testGson() {
 		Gson gson = new GsonBuilder().create();
 		String input = "{\"ref\":\"name\"}";
 		Exp.Push push = gson.fromJson(input, Exp.Push.class);
 		assertNotNull(push.getRef());
+	}
+
+	@Test
+	public void testGenericWithWildcard() {
+		// List<Number> listNumber = new ArrayList<Integer>(); error
+
+		// 通配符是对类型做的限制，也就是说只限制涉及到通配符的操作
+		List<? extends Number> listExtendsNumber = new ArrayList<Integer>();
+		// listExtendsNumber.add(new Integer(0)); error
+		// 可以把子类add到集合中
+		List<Number> listNumber = new ArrayList<>();
+		listNumber.addAll(new ArrayList<>(Arrays.asList(1.0, 2L, 1)));
+		listNumber.add(new Integer(0));
+		listNumber.add(new Long(0));
+		int.class.getSimpleName();
+		Integer.class.getSimpleName();
+
+		List<?> listUnbounded = new ArrayList<Integer>();
+		listUnbounded.get(0);// will get Object
+		// listUnbounded.add(new Object()); error
+		listUnbounded = new ArrayList<String>();
+	}
+
+	@Test
+	public void testTypeInfer() {
+		Arrays.asList(1.0, 1.0);// Double
+		Arrays.asList(1.0, 1L);// ? extends Number
+		Arrays.asList(1.0, 1L, "haha");// ? extends Object
+		for (Object o : Arrays.asList(new int[1])) {
+			System.out.println(o.getClass().getCanonicalName());
+		}
+		for (Object o : Arrays.asList(new Number[] { 1 })) {
+			System.out.println(o.getClass().getCanonicalName());
+		}
+		System.out.println(int.class.getCanonicalName());
+		int a = Integer.valueOf(0);
+
+	}
+
+	@Test
+	public void testSoftReference() {
+		List<SoftReference<Integer>> references = new LinkedList<>();
+		Integer[] ints = new Integer[6];
+		for (int i = 0; i < ints.length; i++) {
+			Integer curr = new Integer(i);
+			if (i % 3 == 0) {
+				ints[i] = curr;
+			}
+			references.add(new SoftReference<Integer>(curr));
+		}
+		System.gc();
+		System.gc();
+		for (int i = 0; i < references.size(); i++) {
+			System.out.println("reference get: " + references.get(i).get());
+		}
+	}
+
+	public static class GrandPa {
+		public static int a = 1;
+	}
+
+	public static class Father extends GrandPa {
+		public static int a = 2;
+	}
+
+	
+	@Test
+	public void j() {
+		List<ListNode> nodes =  Arrays.asList(new ListNode(1), new ListNode(2), new ListNode(3));
+		System.out.println(nodes.stream().min(Comparator.comparing(node->node.val)).get().val);
+		System.out.println(nodes.stream().reduce(new ListNode(-1), (n1, n2)->new ListNode(n1.val + n2.val)).val);
+	}
+	
+	@Test
+	public void testNewDate() {
+		long timeL = 1429788765435L;
+	}
+	
+	//start testLambda
+	private <T> T supply(Supplier<T> supplier) {
+		return supplier.get();
+	}
+	
+	private <T, R> void action(T t, Function<T, R> function) {
+		System.out.println(function.apply(t));
+	}
+	
+	@Test
+	public void testLambda() {
+		class L {
+			public String get() {
+				return "l1";
+			}
+		}
+		Function<L, String> function = L::get;
+		Supplier<L> supplier = L::new;
+		Function<L, L> newFunc = L::new;
 	}
 }

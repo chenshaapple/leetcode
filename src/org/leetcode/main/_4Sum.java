@@ -38,6 +38,35 @@ public class _4Sum {
         }
         return result;
     }
+    
+    public class Solution {
+        public List<List<Integer>> fourSum(int[] nums, int target) {
+            List<List<Integer>> res = new LinkedList<>();
+            Arrays.sort(nums);
+            for(int i = 0; i < nums.length; i++) {
+            		if(i > 0 && nums[i] == nums[i - 1]) continue;
+            		for(int j = i + 1; j < nums.length; j++) {
+            			if(j > i + 1 && nums[j] == nums[j - 1]) continue;
+            			for(int k = j + 1, l = nums.length - 1; k < l;) {
+            				if(k > j + 1 && nums[k] == nums[k - 1]) {
+            					k++;
+            					continue;
+            				}
+            				int sum = nums[i] + nums[j] + nums[k] + nums[l];
+            				if(sum == target) {
+            					res.add(Arrays.asList(nums[i], nums[j], nums[k], nums[l]));
+            					k++;l--;
+            				} else if(sum < target) {
+            					k++;
+            				} else {
+            					l--;
+            				}
+            			}
+            		}
+            }
+            return res;
+        }
+    }
 	@Test
 	public void test() {
 		fourSum(new int[]{1, 0, -1, 0, -2, 2}, 0);
@@ -46,9 +75,5 @@ public class _4Sum {
 	@Test
 	public void test2() {
 		fourSum(new int[]{-3,-1,0,2,4,5}, 0);
-	}
-	
-	@Test
-	public void test3() {
 	}
 }

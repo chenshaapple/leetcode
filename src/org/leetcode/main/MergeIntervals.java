@@ -53,7 +53,25 @@ public class MergeIntervals {
 		}
 		return result;
 	}
-
+	public class Solution {
+	    public List<Interval> merge(List<Interval> intervals) {
+	    		if(intervals.size() == 0)
+	    			return intervals;
+	        List<Interval> res = new LinkedList<>();
+	        Collections.sort(intervals, (i1, i2) -> Integer.compare(i1.start, i2.start));
+	        res.add(intervals.get(0));
+	        for(int i = 1; i < intervals.size(); i++) {
+	        		Interval curr = intervals.get(i);
+	        		Interval prev = res.get(res.size() - 1);
+	        		if(prev.end < curr.start) {
+	        			res.add(curr);
+	        		} else {
+	        			prev.end = Math.max(curr.end, prev.end);
+	        		}
+	        }
+	        return res;
+	    }
+	}
 	@Test
 	public void test() {
 		fail("Not yet implemented");

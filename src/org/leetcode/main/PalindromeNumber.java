@@ -5,56 +5,69 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class PalindromeNumber {
-	public boolean isPalindrome(int x) {
-		if(x < 0) {
-			return false;
-		}
-		int digitCount = getDigitCount(x);
-		int divide = (int) Math.pow(10, digitCount - 1);
-		while(digitCount > 1) {
-			if(x / divide !=  x % 10) {
+	public class Solution {
+		public boolean isPalindrome(int x) {
+			if (x < 0)
 				return false;
+			int digitCapacity = getDigitCapacity(x);
+			while (digitCapacity > 1) {
+				int denominator = (int) Math.pow(10, digitCapacity - 1);
+				if (x / denominator != x % 10)
+					return false;
+				x = (x % denominator) / 10;
+				digitCapacity -= 2;
 			}
-			x = (x % divide) / 10;
-			digitCount -= 2;
+			return true;
 		}
-		return true;
+
+		private int getDigitCapacity(int x) {
+			int res = 0;
+			while (x > 0) {
+				res++;
+				x /= 10;
+			}
+			return res;
+		}
 	}
 
-	private int getDigitCount(int x) {
-		int result = 0;
-		while(x > 0) {
-			x /= 10;
-			result++;
+	public class Solution2 {
+		public boolean isPalindrome(int x) {
+	        if(x < 0) return false;
+			int digits = 0;
+			int origin = x;
+			while(x > 0) {
+				digits++;
+				x /= 10;
+			}
+			while(digits > 0) {
+				int divisor = (int)Math.pow(10, digits - 1);
+				int left = origin / divisor;
+				int right = origin % 10;
+				if(left != right) return false;
+				origin = (origin % divisor) / 10;
+				digits -= 2;
+			}
+			return true;
 		}
-		return result;
 	}
-	
-	private int getHighDigit(int x) {
-		if(x/100000000 > 0) x/=100000000;
-		if(x/10000 > 0) x/=10000;
-		if(x/100 > 0) x/=100;
-		if(x/10 > 0) x/=10;
-		return x;
-	}
-
+	private Solution sln = new Solution();
 	@Test
 	public void test() {
-		assertEquals(true , isPalindrome(12321));
+		assertEquals(true, sln.isPalindrome(12321));
 	}
 
 	@Test
 	public void test1() {
-		assertEquals(true, isPalindrome(123321));
+		assertEquals(true, sln.isPalindrome(123321));
 	}
-	
+
 	@Test
 	public void test2() {
-		assertEquals(false, isPalindrome(1234123));
+		assertEquals(false, sln.isPalindrome(1234123));
 	}
-	
+
 	@Test
 	public void test3() {
-		assertEquals(false, isPalindrome(1000021));
+		assertEquals(false, sln.isPalindrome(1000021));
 	}
 }

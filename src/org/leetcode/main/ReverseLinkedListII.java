@@ -1,9 +1,8 @@
 package org.leetcode.main;
 
-import static org.junit.Assert.*;
+import java.util.Deque;
+import java.util.LinkedList;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 class ListNode {
@@ -14,58 +13,44 @@ class ListNode {
 		val = x;
 		next = null;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder res = new StringBuilder();
+		ListNode curr = this;
+		while(curr.next != null) {
+			res.append(curr.val + "->");
+			curr = curr.next;
+		}
+		res.append(curr.val);
+		return res.toString();
+	}
 }
 
 public class ReverseLinkedListII {
-
-	public ListNode reverseBetween(ListNode head, int m, int n) {
-		ListNode preNode = null, curNode = head, preReverseNode = null;
-		
-		for (int i = 0; i < m - 1; i++) {
-			preNode = curNode;		//m-1th node
-			curNode = curNode.next;	//mth node
-		}
-		preReverseNode = preNode;
-		preNode = curNode;
-		curNode = curNode.next;
-		
-		ListNode tmp;
-		for (int i = m; i < n; i++) {
-			tmp = curNode.next;
-			curNode.next = preNode;
-			preNode = curNode;
-			curNode = tmp;
-		}
-		
-		if (preReverseNode != null) {
-			preReverseNode.next.next = curNode;
-			preReverseNode.next = preNode;
-		} else {
-			head.next = curNode;
-			head = preNode;
-		}
-		return head;
+	public class Solution {
+	    public ListNode reverseBetween(ListNode head, int m, int n) {
+	    		if(m == n) return head;
+	    		ListNode vhead = new ListNode(0), prevRev = vhead, prev = null, curr = null;
+	    		vhead.next = head;
+	    		for(int i = 0; i < m - 1; i++) {
+	    			prevRev = prevRev.next;
+	    		}
+	    		prev = prevRev;
+	    		curr = prev.next;
+	    		for(int i = m; i <= n; i++) {
+	    			ListNode tmp = curr.next;
+	    			curr.next = prev;
+	    			prev = curr;
+	    			curr = tmp;
+	    		}
+	    		prevRev.next.next = curr;
+	    		prevRev.next = prev;
+	    		return vhead.next;
+	    }
 	}
 
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	private void printList(ListNode head) {
-		ListNode node = head;
-		while (node != null) {
-			System.out.print(node.val);
-			if (node.next != null) {
-				System.out.print("->");
-			}
-			node = node.next;
-		}
-		System.out.println();
-	}
+	private Solution sln = new Solution();
 
 	@Test
 	public void test() {
@@ -78,13 +63,7 @@ public class ReverseLinkedListII {
 		node3.next = node4;
 		ListNode node5 = new ListNode(5);
 		node4.next = node5;
-		printList(head);
-		node2.next = null;
-		reverseBetween(head, 1, 2);
-		printList(head);
-		node2.next = node3;
-		reverseBetween(head, 2, 4);
-		printList(head);
+		System.out.println(sln.reverseBetween(head, 1, 2));
 	}
 
 }

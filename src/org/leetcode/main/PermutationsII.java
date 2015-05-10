@@ -1,42 +1,38 @@
 package org.leetcode.main;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import java.util.*;
 
 public class PermutationsII {
-	public ArrayList<ArrayList<Integer>> permuteUnique(int[] num) {
-		ArrayList<ArrayList<Integer>> res = new ArrayList<ArrayList<Integer>>();
+	public List<List<Integer>> permuteUnique(int[] num) {
+		List<List<Integer>> res = new ArrayList<>();
 		Arrays.sort(num);
-		helper(num, new boolean[num.length], new ArrayList<Integer>(), res);
+		permuteUnique(res, new LinkedList<>(), num, new boolean[num.length]);
 		return res;
 	}
 
-	private void helper(int[] num, boolean[] used, ArrayList<Integer> item,
-			ArrayList<ArrayList<Integer>> res) {
+	private void permuteUnique(List<List<Integer>> res, List<Integer> item,
+			int[] num, boolean[] visited) {
 		if (item.size() == num.length) {
-			res.add(new ArrayList<Integer>(item));
+			res.add(new ArrayList<>(item));
 			return;
 		}
 		for (int i = 0; i < num.length; i++) {
-			if (i > 0 && !used[i - 1] && num[i] == num[i - 1]) {
-				continue;
-			}
-			if (!used[i]) {
-				used[i] = true;
+			if(i != 0 && !visited[i - 1] && num[i] == num[i - 1]) continue;
+			if(!visited[i]) {
+				visited[i] = true;
 				item.add(num[i]);
-				helper(num, used, item, res);
+				permuteUnique(res, item, num, visited);
 				item.remove(item.size() - 1);
-				used[i] = false;
+				visited[i] = false;
 			}
 		}
 	}
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		System.out.println(permuteUnique(new int[]{1,1,2}));
 	}
 
 }

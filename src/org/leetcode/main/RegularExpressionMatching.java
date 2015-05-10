@@ -33,27 +33,50 @@ public class RegularExpressionMatching {
 		return false;
 	}
 
-	@Before
-	public void setUp() throws Exception {
+	public class Solution {
+		public boolean isMatch(String s, String p) {
+			boolean[][] opt = new boolean[s.length() + 1][p.length() + 1];
+			opt[0][0] = true;
+			for (int i = 1; i < p.length(); i++) {
+				// means match 0 char
+				if (p.charAt(i) == '*')
+					opt[0][i + 1] = opt[0][i - 1];
+			}
+			for (int i = 1; i <= s.length(); i++) {
+				for (int j = 1; j <= p.length(); j++) {
+					char curr = p.charAt(j - 1);
+					if (curr == '.') {
+						opt[i][j] = opt[i - 1][j - 1];
+					} else if (curr == '*') {
+						// 0, 1, >1
+						opt[i][j] = opt[i][j - 2]
+								|| opt[i][j - 1]
+								|| (opt[i - 1][j] && (p.charAt(j - 2) == '.' || s
+										.charAt(i - 1) == p.charAt(j - 2)));
+					} else {
+						opt[i][j] = opt[i - 1][j - 1]
+								&& s.charAt(i - 1) == curr;
+					}
+				}
+			}
+			return opt[s.length()][p.length()];
+		}
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
+	private Solution sln = new Solution();
 	@Test
 	public void test() {
-		assertEquals(true, isMatch("aab", "c*a*b"));
+		assertEquals(true, sln.isMatch("aab", "c*a*b"));
 	}
 
 	@Test
 	public void test6() {
-		assertEquals(true, isMatch("ab", ".*"));
+		assertEquals(true, sln.isMatch("ab", ".*"));
 	}
 
 	@Test
 	public void test5() {
-		assertEquals(true, isMatch("aa", ".*"));
+		assertEquals(true, sln.isMatch("aa", ".*"));
 	}
 
 	@Test
@@ -63,21 +86,21 @@ public class RegularExpressionMatching {
 
 	@Test
 	public void test3() {
-		assertEquals(false, isMatch("aaa", "aa"));
+		assertEquals(false, sln.isMatch("aaa", "aa"));
 	}
 
 	@Test
 	public void test2() {
-		assertEquals(true, isMatch("aa", "aa"));
+		assertEquals(true, sln.isMatch("aa", "aa"));
 	}
 
 	@Test
 	public void test1() {
-		assertEquals(false, isMatch("aa", "a"));
+		assertEquals(false, sln.isMatch("aa", "a"));
 	}
 
 	@Test
 	public void test8() {
-		assertEquals(true, isMatch("a", "ab*"));
+		assertEquals(true, sln.isMatch("a", "ab*"));
 	}
 }

@@ -6,24 +6,19 @@ import org.junit.Test;
 
 public class MergeTwoSortedLists {
     public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
-        ListNode result = new ListNode(0), curt = result, left = l1, right = l2;
-        while(left != null && right != null) {
-            if(left.val < right.val) {
-                curt.next = left;
-                left = left.next;
-            } else {
-                curt.next = right;
-                right = right.next;
-            }
-            curt = curt.next;
-        }
-        if(left != null) {
-            curt.next = left;
-        }
-        if(right != null) {
-            curt.next = right;
-        }
-        return result.next;
+    		ListNode vhead = new ListNode(0), curr = vhead, lCurr = l1, rCurr = l2;
+    		while(lCurr != null && rCurr != null) {
+    			if(lCurr.val < rCurr.val) {
+    				curr.next = lCurr;
+    				lCurr = lCurr.next;
+    			} else {
+    				curr.next = rCurr;
+    				rCurr = rCurr.next;
+    			}
+    			curr = curr.next;
+    		}
+    		curr.next = lCurr != null ? lCurr : rCurr;
+    		return vhead.next;
     }
 	@Test
 	public void test() {

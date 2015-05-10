@@ -4,50 +4,52 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 import java.util.*;
+
 public class LetterCombinationsofaPhoneNumber {
-	private Map<Integer, List<Character>> dictionary = new HashMap<>();
-	{
-		char initChar = 'a';
-		for(int i = 0; i < 10; i++) {
-			List<Character> list = new ArrayList<>();
-			dictionary.put(i, list);
-			if(i == 0 || i == 1) {
-				continue;
+	public class Solution {
+		private Map<Integer, List<Character>> dict = new HashMap<>();
+		{
+			char init = 'a';
+			for (int i = 2; i < 10; i++) {
+				List<Character> list = new LinkedList<>();
+				for (int j = 0; j < 3; j++)
+					list.add(init++);
+				if (i == 7 || i == 9)
+					list.add(init++);
+				dict.put(i, list);
 			}
-			for(int j = 0; j < 3; j++) {
-				list.add(initChar++);
+		}
+
+		public List<String> letterCombinations(String digits) {
+			List<String> res = new LinkedList<>();
+			char[] chars = digits.toCharArray();
+			List<List<Character>> list = new LinkedList<>();
+			for (char c : chars)
+				list.add(dict.get(c - '0'));
+			letterCombinations(res, new StringBuilder(), list, 0);
+			return res;
+		}
+
+		private void letterCombinations(List<String> res,
+				StringBuilder builder, List<List<Character>> list, int index) {
+			if (index == list.size()) {
+				res.add(builder.toString());
+				return;
 			}
-			if(i == 7 || i == 9) {
-				list.add(initChar++);
+			for (Character c : list.get(index)) {
+				builder.append(c);
+				letterCombinations(res, builder, list, index + 1);
+				builder.deleteCharAt(builder.length() - 1);
 			}
 		}
 	}
-    public List<String> letterCombinations(String digits) {
-        List<String> result = new ArrayList<>();
-        letterCombinations(result, new StringBuilder(), digits);
-        return result;
-    }
-    
-    private void letterCombinations(List<String> result, StringBuilder letters, String digits) {
-    	if(digits.length() == 0) {
-    		result.add(letters.toString());
-    		return;
-    	}
-    	List<Character> letterList = dictionary.get(digits.charAt(0) - '0');
-    	String nextDigits = digits.substring(1);
-    	for(Character c : letterList) {
-    		letters.append(c);
-    		letterCombinations(result, letters, nextDigits);
-    		letters.deleteCharAt(letters.length() - 1);
-    	}
-    }
+
+	private Solution sln = new Solution();
+
 	@Test
 	public void test() {
-//		for(List<Character> list : dictionary.values()) {
-//			System.out.println(list);
-//		}
-		List<String> result = letterCombinations("23");
-		for(String str : result) {
+		List<String> result = sln.letterCombinations("23");
+		for (String str : result) {
 			System.out.println(str);
 		}
 	}

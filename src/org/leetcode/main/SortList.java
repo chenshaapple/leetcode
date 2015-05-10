@@ -10,11 +10,83 @@ import org.junit.Test;
  */
 
 public class SortList {
-	
-	public ListNode quickSort(ListNode head) {
-		
+
+	/**
+	 * without tail
+	 */
+	public ListNode normalQuickSort(ListNode head) {
+		if (head == null || head.next == null) {
+			return head;
+		}
+		ListNode l = new ListNode(-1), e = new ListNode(0), g = new ListNode(1);
+		ListNode lCurt = l, eCurt = e, gCurt = g, curt = head;
+		while (curt != null) {
+			if (curt.val == head.val) {
+				eCurt = eCurt.next = curt;
+			} else if (curt.val < head.val) {
+				lCurt = lCurt.next = curt;
+			} else {
+				gCurt = gCurt.next = curt;
+			}
+			curt = curt.next;
+		}
+		lCurt.next = null;
+		gCurt.next = null;
+		ListNode res = null;
+		ListNode left = normalQuickSort(l.next);
+		eCurt.next = normalQuickSort(g.next);
+		if (left != null) {
+			ListNode leftCurt = left;
+			while (leftCurt.next != null) {
+				leftCurt = leftCurt.next;
+			}
+			leftCurt.next = e.next;
+			res = left;
+		} else {
+			res = e.next;
+		}
+		return res;
 	}
-	
+
+	/**
+	 * with tail
+	 */
+	public ListNode quickSort(ListNode head) {
+		return quickSort(head, null);
+	}
+
+	private ListNode quickSort(ListNode head, ListNode tail) {
+		if (head == null || head.next == tail) {
+			return head;
+		}
+		ListNode little = new ListNode(0), equal = new ListNode(0), great = new ListNode(
+				0);
+		ListNode lCurt = little, eCurt = equal, gCurt = great;
+		ListNode curt = head;
+		while (curt != tail) {
+			if (curt.val == head.val) {
+				eCurt = eCurt.next = curt;
+			} else if (curt.val < head.val) {
+				lCurt = lCurt.next = curt;
+			} else {
+				gCurt = gCurt.next = curt;
+			}
+			curt = curt.next;
+		}
+		eCurt.next = tail;
+		ListNode res = equal.next;
+		// 先把三个list的尾部确定
+		if (little.next != null) {
+			lCurt.next = equal.next;
+			res = quickSort(little.next, equal.next);
+		}
+		if (great.next != null) {
+			gCurt.next = tail;
+			eCurt.next = quickSort(great.next, tail);
+		}
+		return res;
+	}
+
 	public ListNode sortListBottomUp(ListNode head) {
 		if (head == null) {
 			return null;
@@ -138,4 +210,52 @@ public class SortList {
 		print(sortListBottomUp(head));
 	}
 
+	@Test
+	public void testHashCode() {
+		ListNode node1 = new ListNode(0);
+		ListNode node2 = new ListNode(0);
+		System.out.println(node1);
+		System.out.println(node2);
+	}
+
+	@Test
+	public void testQuickSrot() {
+		ListNode head = new ListNode(3);
+		head.next = new ListNode(2);
+		head.next.next = new ListNode(4);
+		print(quickSort(head));
+	}
+
+	@Test
+	public void testQS1() {
+		ListNode head = new ListNode(3);
+		head.next = new ListNode(2);
+		head.next.next = new ListNode(1);
+		print(quickSort(head));
+	}
+
+	@Test
+	public void testQS2() {
+		ListNode head = new ListNode(1);
+		head.next = new ListNode(2);
+		head.next.next = new ListNode(3);
+		print(quickSort(head));
+	}
+
+	private ListNode generateList(int[] nums) {
+		ListNode res = new ListNode(0), curt = res;
+		for (int num : nums) {
+			curt.next = new ListNode(num);
+			curt = curt.next;
+		}
+		return res.next;
+	}
+
+	@Test
+	public void testQS3() {
+		// 4,19,14,5,-3,1,8,5,11,15
+		ListNode head = generateList(new int[] { 4, 19, 14, 5, -3, 1, 8, 5, 11,
+				15 });
+		print(quickSort(head));
+	}
 }

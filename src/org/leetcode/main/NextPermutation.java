@@ -30,24 +30,31 @@ public class NextPermutation {
 		}
 		Arrays.sort(num);
 	}
+	
+	public class Solution {
+	    public void nextPermutation(int[] nums) {
+	    		int i = -1, larger = -1;
+	    		for(i = nums.length - 1; i > 0; i--) {
+	    			if(nums[i - 1] < nums[i]) break;
+	    		}
+	    		Arrays.sort(nums, i, nums.length);
+	    		if(i == 0) return;
+	    		for(larger = i; larger < nums.length; larger++) {
+	    			if(nums[larger] > nums[i - 1]) break;
+	    		}
+	    		int tmp = nums[i - 1];
+	    		nums[i - 1] = nums[larger];
+	    		nums[larger] = tmp;
+	    }
+	}
 
+	private Solution sln = new Solution();
+	
 	@Test
 	public void test() {
 		int[] num = new int[] { 4, 2, 0, 2, 3, 2, 0 };
-		nextPermutation(num);
-		assertEquals(Arrays.asList(new int[] { 4, 2, 0, 3, 0, 2, 2 }),
-				Arrays.asList(num));
+		sln.nextPermutation(num);
+		assertEquals(Arrays.toString(new int[] { 4, 2, 0, 3, 0, 2, 2 }),
+				Arrays.toString(num));
 	}
-	
-	@Test
-	public void testXor() {
-		int a, b;
-		a = b = Integer.MAX_VALUE;
-		a = a ^ b;
-		b = a ^ b;
-		a = a ^ b;
-		assertEquals(a, b);
-		assertEquals(0, a);
-	}
-
 }

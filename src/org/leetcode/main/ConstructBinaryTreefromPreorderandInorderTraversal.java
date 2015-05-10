@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class ConstructBinaryTreefromPreorderandInorderTraversal {
+	
 	public TreeNode buildTree(int[] preorder, int[] inorder) {
 		return construct(preorder, 0, inorder, 0, inorder.length - 1);
 	}

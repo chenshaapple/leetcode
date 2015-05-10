@@ -7,7 +7,6 @@ import java.awt.HeadlessException;
 import org.junit.Test;
 
 /*
- * ��������������<��<��
  */
 
 public class ConvertSortedListtoBinarySearchTree {
@@ -32,47 +31,30 @@ public class ConvertSortedListtoBinarySearchTree {
 		return root;
 	}
 
-	private ListNode curt;
-	
-	public TreeNode sortedListToBSTBottomUp(ListNode head) {
-		int size = 0;
-		ListNode curt = head;
-		while(curt != null) {
-			curt = curt.next;
-			size++;
-		}
-		this.curt = head;
-		return bottomUp(0, size - 1);
+	public class Solution {
+		private ListNode curr;
+	    public TreeNode sortedListToBST(ListNode head) {
+	        int len = 0;
+	        ListNode tmpCurr = head;
+	        while(tmpCurr != null) {
+	        		tmpCurr = tmpCurr.next;
+	        		len++;
+	        }
+	        curr = head;
+	        return sortedListToBST(0, len - 1);
+	    }
+	    
+	    private TreeNode sortedListToBST(int begin, int end) {
+	    		if(begin > end) {
+	    			return null;
+	    		}
+	    		int mid = (begin + end) / 2;
+	    		TreeNode left = sortedListToBST(begin, mid - 1);
+	    		TreeNode root = new TreeNode(curr.val);
+	    		curr = curr.next;
+	    		root.right = sortedListToBST(mid + 1, end);
+	    		root.left = left;
+	    		return root;
+	    }
 	}
-	
-	private TreeNode bottomUp(int begin, int end) {
-		if(begin > end) {
-			return null;
-		}
-		int mid = (begin + end) / 2;
-		TreeNode left = bottomUp(begin, mid - 1);
-		TreeNode result = new TreeNode(curt.val);
-		curt = curt.next;
-		result.left = left;
-		result.right = bottomUp(mid + 1, end);
-		return result;
-	}
-	
-	private void inorder(TreeNode head) {
-		if(head == null) {
-			return;
-		}
-		inorder(head.left);
-		System.out.print(head.val + " ");
-		inorder(head.right);
-	}
-	
-	@Test
-	public void test() {
-		ListNode head = new ListNode(1);
-		head.next = new ListNode(2);
-		head.next.next = new ListNode(3);
-		inorder(sortedListToBSTBottomUp(head));
-	}
-
 }

@@ -3,12 +3,47 @@ package org.leetcode.main;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.hamcrest.core.Is;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ImplementstrStr {
+
+	/**
+	 * implement the Sunday algorithm
+	 * 
+	 * @param haystack
+	 * @param needle
+	 *            the pattern string
+	 * @return
+	 */
+	public int strStrSunday(String haystack, String needle) {
+		Map<Character, Integer> map = new HashMap<Character, Integer>();
+		for (int j = 0; j < needle.length(); j++) {
+			Character c = needle.charAt(j);
+			map.put(c, j);
+		}
+		int i = 0;
+		while (i < haystack.length()) {
+			char c = haystack.charAt(i);
+			if (map.containsKey(c)) {
+				int tmp = i - map.get(c);
+				if (tmp >= 0 && tmp + needle.length() <= haystack.length()) {
+					if (haystack.substring(tmp, tmp + needle.length()).equals(
+							needle))
+						return tmp;
+				}
+				i++;
+			} else {
+				i += Math.max(needle.length(), 1);
+			}
+		}
+		return -1;
+	}
 
 	public int strStr(String haystack, String needle) {
 		if (needle.length() == 0) {
@@ -16,15 +51,15 @@ public class ImplementstrStr {
 		}
 		int i = 0, j = 0;
 		int[] table = getNextArray(needle.toCharArray());
-        while (i < haystack.length() && j < needle.length()) {
-            if (j == -1 || haystack.charAt(i) == needle.charAt(j)) {
-                i++;
-                j++;
-            } else
-                j = table[j]; // next[j]表示在j位置匹配出现不同的时候下一个匹配位置
-        }
+		while (i < haystack.length() && j < needle.length()) {
+			if (j == -1 || haystack.charAt(i) == needle.charAt(j)) {
+				i++;
+				j++;
+			} else
+				j = table[j];
+		}
 
-        return j == needle.length() ? i - j : -1;
+		return j == needle.length() ? i - j : -1;
 	}
 
 	private int[] getNextArray(char[] pattern) {
@@ -69,33 +104,42 @@ public class ImplementstrStr {
 		return result;
 	}
 
-	@Before
-	public void setUp() throws Exception {
+	public class Solution {
+	    public int strStr(String haystack, String needle) {
+	    		if(needle.length() == 0) return 0;
+	        Map<Character, Integer> map = new HashMap<>();
+	        for(int i = 0; i < needle.length(); i++)
+	        		map.put(needle.charAt(i), i);
+	        	for(int i = 0; i < haystack.length();) {
+	        		Character curr = haystack.charAt(i);
+	        		if(map.containsKey(curr)) {
+	        			int tmp = i - map.get(curr);
+	        			if(tmp >= 0 && tmp + needle.length() <= haystack.length()) {
+	        				if(haystack.substring(tmp, tmp + needle.length()).equals(needle))
+	        					return tmp;
+	        			}
+	        			i++;
+	        		} else
+	        			i += needle.length();
+	        	}
+	        return -1;
+	    }
 	}
-
-	@After
-	public void tearDown() throws Exception {
+	@Test
+	public void test1() {
+		String haystack = "aaa", needle = "aaa";
+		assertEquals(strStr(haystack, needle), strStrSunday(haystack, needle));
 	}
-
-	// @Test
-	// public void test() {
-	// assertTrue(Arrays.equals(new int[] { -1, 0, 0, 0, 0, 1, 2 },
-	// kmp_table("ABCDABD".toCharArray())));
-	// assertTrue(Arrays.equals(new int[] { -1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0,
-	// 0, 0, 0, 0, 0, 1, 2, 3, 0, 0, 0, 0, 0 },
-	// kmp_table("PARTICIPATE IN PARACHUTE".toCharArray())));
-	// }
 
 	@Test
-	public void testMyNext() {
-		assertTrue(Arrays.equals(new int[] { -1, 0, 0, 0, 0, 0, 0, 0, 1, 2, 0,
-				0, 0, 0, 0, 0, 1, 2, 3, 0, 0, 0, 0, 0 },
-				getNextArray("PARTICIPATE IN PARACHUTE".toCharArray())));
+	public void test2() {
+		String haystack = "mississippi", needle = "issip";
+		assertEquals(strStr(haystack, needle), strStrSunday(haystack, needle));
 	}
 
 	@Test
-	public void testMyNextEasyCase() {
-		assertTrue(Arrays.equals(new int[] { -1, 0, 0, 0, 0, 1, 2 },
-				getNextArray("ABCDABD".toCharArray())));
+	public void test3() {
+		String haystack = "mississippi", needle = "issi";
+		assertEquals(strStr(haystack, needle), strStrSunday(haystack, needle));
 	}
 }

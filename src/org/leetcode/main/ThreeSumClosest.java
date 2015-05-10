@@ -33,9 +33,32 @@ public class ThreeSumClosest {
     	  	}
     	  	return result;
     }
+    public class Solution {
+        public int threeSumClosest(int[] nums, int target) {
+            long res = Integer.MAX_VALUE;
+            Arrays.sort(nums);
+            for(int i = 0; i < nums.length - 2; i++) {
+            		for(int j = i + 1, k = nums.length - 1; j < k;) {
+            			int sum = nums[i] +  nums[j] + nums[k];
+            			if(Math.abs(target - sum) < Math.abs(target - res))
+            				res = sum;
+            			if(sum < target)
+            				j++;
+            			else if(sum > target)
+            				k--;
+            			else {
+            				j++;k--;
+            			}
+            		}
+            }
+            return (int)res;
+        }
+    }
+    
+    private Solution sln = new Solution();
 	@Test
 	public void test() {
-		assertEquals(0, threeSumClosest(new int[]{0,0,0}, 1) );
+		assertEquals(0, sln.threeSumClosest(new int[]{0,0,0}, 1) );
 	}
 	
 }

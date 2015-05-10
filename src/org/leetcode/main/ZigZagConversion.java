@@ -24,29 +24,46 @@ public class ZigZagConversion {
 		}
 		return result.toString();
 	}
-
+	public class Solution {
+	    public String convert(String s, int rows) {
+	    		if(rows < 2) return s;
+	        StringBuilder res = new StringBuilder();
+	        int step = (rows - 1) * 2;
+	        for(int i = 0, currStep = step; i < rows; i++, currStep -= 2) {
+	        		int index = i;
+	        		boolean isDown = true;
+	        		if(currStep == 0)
+	        			currStep = step;
+	        		while(index < s.length()) {
+	        			res.append(s.charAt(index));
+	        			int tmp = step - currStep;
+	        			if(tmp == 0)
+	        				tmp = step;
+	        			index += isDown ? currStep : tmp;
+	        			isDown = !isDown;
+	        		}
+	        }
+	        return res.toString();
+	    }
+	}
+	
+	private Solution sln = new Solution();
 	@Test
 	public void test3() {
-		assertEquals("PAHNAPLSIIGYIR", convert("PAYPALISHIRING", 3));
+		assertEquals("PAHNAPLSIIGYIR", sln.convert("PAYPALISHIRING", 3));
 	}
 	
 	@Test
 	public void test4() {
 		System.out.println();
 		System.out.println(convert("PAYPALISHIRING", 4));
-		assertEquals("PAYPALISHIRING".length(), convert("PAYPALISHIRING", 3).length());
+		assertEquals("PAYPALISHIRING".length(), sln.convert("PAYPALISHIRING", 3).length());
 	}
 	
 	@Test
 	public void test1() {
 		String s = "PAYPALISHIRING";
-		String result = convert(s, 1);
+		String result = sln.convert(s, 1);
 		assertEquals(s, result);
-	}
-
-	@Test
-	public void test2() {
-		String s = "PAYPALISHIRING";
-		String result = convert(s, 2);
 	}
 }

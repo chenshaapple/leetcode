@@ -16,54 +16,64 @@ class RandomListNode {
 	RandomListNode(int x) {
 		this.label = x;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder res = new StringBuilder();
+		RandomListNode curr = this;
+		while(curr != null) {
+			res.append(label);
+			if(curr.next != null) res.append("->");
+			curr = curr.next;
+		}
+		return res.toString();
+	}
 };
 
 public class CopyListwithRandomPointer {
-
-	@Before
-	public void setUp() throws Exception {
+	public class Solution {
+	    public RandomListNode copyRandomList(RandomListNode head) {
+	        Map<RandomListNode, RandomListNode> map = new HashMap<>();
+	        for(RandomListNode curr = head; curr != null; curr = curr.next) {
+	        		RandomListNode node = new RandomListNode(curr.label);
+	        		map.put(curr, node);
+	        }
+	        for(RandomListNode curr = head; curr != null; curr = curr.next) {
+	        		RandomListNode node = map.get(curr);
+	        		node.next = map.get(curr.next);
+	        		node.random = map.get(curr.random);
+	        }
+	        return map.get(head);
+	    }
+	    
+	    public RandomListNode copyRandomList2(RandomListNode head) {
+	    		if(head == null) return head;
+	    		for(RandomListNode curr = head; curr != null; curr = curr.next.next) {
+	    			RandomListNode copy = new RandomListNode(curr.label);
+	    			copy.next = curr.next;
+	    			curr.next = copy;
+	    		}
+	    		RandomListNode res = head.next;
+	    		for(RandomListNode curr = head; curr != null; curr = curr.next.next) {
+	    			if(curr.random != null)
+	    				curr.next.random = curr.random.next;
+	    		}
+	    		//»¹Ô­List.next
+	    		for(RandomListNode curr = head; curr != null;) {
+	    			RandomListNode next = curr.next.next, copy = curr.next;
+	    			copy.next = next != null ? next.next : null;
+	    			curr.next = next;
+	    			curr = next;
+	    		}
+	    		return res;
+	    }
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-
+	private Solution sln = new Solution();
 	@Test
 	public void test() {
-		Map<String, String> map = new HashMap<>();
-		map.get(null);
-	}
-
-	public RandomListNode copyRandomList(RandomListNode head) {
-		Map<RandomListNode, RandomListNode> existMap = new HashMap<RandomListNode, RandomListNode>();
-		RandomListNode curNode = head;
-		RandomListNode copy= null, copyCurNode = null;
-		if(head != null) {
-			copy = new RandomListNode(head.label);
-			copy.next = null;
-			copy.random = null;
-			copyCurNode = copy;
-		}
-		while(curNode != null) {
-			RandomListNode nextNode = null;
-			RandomListNode randomNode = null;
-			if(curNode.next != null && !existMap.containsKey(curNode.next)) {
-				nextNode = new RandomListNode(curNode.next.label);
-				existMap.put(nextNode, nextNode);
-				copyCurNode.next = nextNode;
-			} else {
-				copyCurNode.next = existMap.get(curNode.next);
-			}
-			if(curNode.random != null && !existMap.containsKey(curNode.random)) {
-				randomNode = new RandomListNode(curNode.random.label);
-				existMap.put(randomNode, randomNode);
-				copyCurNode.random = randomNode;
-			} else {
-				copyCurNode.random = existMap.get(curNode.random);
-			}
-			copyCurNode = copyCurNode.next;
-			curNode = curNode.next;
-		}
-		return copy;
+		RandomListNode head = new RandomListNode(-1);
+		head.next = new RandomListNode(-1);
+		System.out.println(sln.copyRandomList2(head));
 	}
 }
